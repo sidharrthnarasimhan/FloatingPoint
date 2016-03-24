@@ -18,11 +18,8 @@ module fp_add(sum,a_original,b_original);
    always @( a_original or b_original )
      begin
 
-        /// Compute IEEE 754 Double Floating-Point Sum in Seven Easy Steps
-        //  Note: Rounding and sub-normals not handled properly.
 
-        /// Step 1: Copy inputs to a and b so that a's exponent not smaller than b's.
-        //
+        //Compare exp
         if ( a_original[62:52] < b_original[62:52] ) begin
 
            a = b_original;  b = a_original;
@@ -47,8 +44,6 @@ module fp_add(sum,a_original,b_original);
         //
         diff = aexp - bexp;
         bsig = bsig >> diff;
-        //
-        // Note: bexp no longer used. If it were would need to set bexp = aexp;
 
         /// Step 4: If necessary, negate significands.
         //
@@ -56,7 +51,6 @@ module fp_add(sum,a_original,b_original);
         if ( bneg ) bsig = -bsig;
 
         /// Step 5: Compute sum.
-        //
         sumsig = asig + bsig;
 
         /// Step 6: Take absolute value of sum.
@@ -77,7 +71,6 @@ module fp_add(sum,a_original,b_original);
         end else if ( sumsig ) begin:A
            //
            // Case 2: Sum is nonzero and did not overflow.
-           //         Normalize. (See cases 2a and 2b.)
 
            integer pos, adj, i;
 
